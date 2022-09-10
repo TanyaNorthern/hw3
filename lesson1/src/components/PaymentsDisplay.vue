@@ -1,7 +1,14 @@
 <template>
-  <div :class="$style.payment_display">
+  <div>
+    <div :class="$style.payment_display">
       <div :class="$style.payment_display_title" v-for="(item, index) in getTitle()" :key="'t' + index">{{ item }}</div>
       <div :class="$style.payment_display_item" v-for="(item, index) in getFlatPaymentList()" :key="index">{{ item }}</div>
+    </div>
+    <div>
+      <button @click="selectPage" name="page1">1</button>
+      <button @click="selectPage" name="page2">2</button>
+      <button @click="selectPage" name="page3">3</button>
+    </div>
   </div>
 </template>
 
@@ -37,6 +44,9 @@ export default {
     },
     addPayment (index, payment) {
       return `${index} ${payment.date} ${payment.category} ${payment.value}`
+    },
+    selectPage (event) {
+      this.$emit('select-page', event.target.name)
     }
   }
 }
@@ -45,6 +55,7 @@ export default {
 <style lang="scss" module>
 .payment_display {
   margin-top: 20px;
+  margin-bottom: 20px;
   display: grid;
   grid-template-columns: 50px 150px 150px 70px;
   row-gap: 5px;

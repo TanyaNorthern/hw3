@@ -1,9 +1,9 @@
 <template>
   <div id="app">
-    <div class="header">My Personal Costs</div>
+    <div class="header">My Personal Costs: {{ totalCost }}</div>
     <main>
-      <AddPaymentForm @add-payment="addPayment"/>
-      <PaymentsDisplay :paymentsList="paymentsList" show txt="text"/>
+      <AddPaymentForm @add-payment="addPayment" :categoryList="categoryList"/>
+      <PaymentsDisplay @select-page="selectPage" :paymentsList="paymentsList" show txt="text"/>
     </main>
   </div>
 </template>
@@ -11,6 +11,7 @@
 <script>
 import PaymentsDisplay from '@/components/PaymentsDisplay.vue'
 import AddPaymentForm from '@/components/AddPaymentForm.vue'
+import { mapActions, mapMutations, mapGetters } from 'vuex'
 
 export default {
   name: 'App',
@@ -18,37 +19,25 @@ export default {
     AddPaymentForm,
     PaymentsDisplay
   },
-  data: () => ({
-    paymentsList: []
-  }),
+  computed: {
+    ...mapGetters(['paymentsList', 'categoryList', 'totalCost'])
+  },
   methods: {
-    fetchPaymentsData () {
-      return [
-        {
-          date: '28.3.2020',
-          category: 'Food',
-          value: 169
-        },
-        {
-          date: '24.3.2020',
-          category: 'Transport',
-          value: 360
-        },
-        {
-          date: '24.3.2020',
-          category: 'Food',
-          value: 532
-        }
-      ]
-    },
+    ...mapActions(['fetchCategoryData', 'fetchData', 'addNewPayment', 'fetchPageData']),
+    ...mapMutations(['ADD_PAYMENT']),
     addPayment (data) {
-      this.paymentsList.push(data)
+      this.addNewPayment(data)
+    },
+    selectPage (page) {
+      this.fetchPageData(page)
     }
   },
   created () {
-    setTimeout(() => { this.paymentsList = this.fetchPaymentsData() }, 2000)
+    this.fetchData()
+    this.fetchCategoryData()
   }
 }
+
 </script>
 
 <style lang="scss">
@@ -56,6 +45,7 @@ export default {
   font-family: Avenir, Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
   //-moz-osx-font-smoothing: grayscale;
+  //text-align: center;
   color: #2c3e50;
   margin: 50px 20px;
   .header {
