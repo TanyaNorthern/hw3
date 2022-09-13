@@ -1,40 +1,38 @@
 <template>
   <div id="app">
-    <div class="header">My Personal Costs: {{ totalCost }}</div>
+    <header>
+      <nav>
+        <router-link to="dashboard" class="route-link">Dashboard</router-link>
+        <router-link to="about" class="route-link">About</router-link>
+        <router-link to="notfound" class="route-link">Not Found</router-link>
+      </nav>
+    </header>
     <main>
-      <AddPaymentForm @add-payment="addPayment" :categoryList="categoryList"/>
-      <PaymentsDisplay @select-page="selectPage" :paymentsList="paymentsList" show txt="text"/>
+      <router-view/>
+      <button @click="goToPage">About</button>
     </main>
   </div>
 </template>
 
 <script>
-import PaymentsDisplay from '@/components/PaymentsDisplay.vue'
-import AddPaymentForm from '@/components/AddPaymentForm.vue'
-import { mapActions, mapMutations, mapGetters } from 'vuex'
 
 export default {
   name: 'App',
   components: {
-    AddPaymentForm,
-    PaymentsDisplay
   },
-  computed: {
-    ...mapGetters(['paymentsList', 'categoryList', 'totalCost'])
-  },
+  data: () => ({
+  }),
   methods: {
-    ...mapActions(['fetchCategoryData', 'fetchData', 'addNewPayment', 'fetchPageData']),
-    ...mapMutations(['ADD_PAYMENT']),
-    addPayment (data) {
-      this.addNewPayment(data)
-    },
-    selectPage (page) {
-      this.fetchPageData(page)
+    goToPage () {
+      this.$router.push({
+        name: 'about',
+        params: {
+          a: 'qwerty'
+        }
+      })
     }
   },
-  created () {
-    this.fetchData()
-    this.fetchCategoryData()
+  mounted () {
   }
 }
 
@@ -48,8 +46,16 @@ export default {
   //text-align: center;
   color: #2c3e50;
   margin: 50px 20px;
-  .header {
-    font-size: 24px;
-  }
+}
+header {
+  font-size: 22px;
+}
+nav {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+}
+.route-link {
+  margin: 0 5px;
 }
 </style>

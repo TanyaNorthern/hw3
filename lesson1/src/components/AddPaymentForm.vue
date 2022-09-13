@@ -1,7 +1,7 @@
 <template>
   <div>
     <div :class="$style.add_payment_form">
-      <button :class="$style.add_payment_form_hide_btn" @click="setHideBtnTitle">{{ hideBtnTitle }}</button>
+      <button id="hide_button" :class="$style.add_payment_form_hide_btn" @click="setHideBtnTitle">{{ hideBtnTitle }}</button>
       <div :class="$style.add_payment_form_container" v-if="show">
         <input type="text" :class="$style.add_payment_form_txt" placeholder="Date" v-model="date">
         <select  :class="$style.add_payment_form_txt" v-model="category">
@@ -9,7 +9,7 @@
         </select>
         <input type="text" :class="$style.add_payment_form_txt" placeholder="Value" v-model="value">
         <div :class="$style.add_payment_form_add_btn_container">
-          <button :class="$style.add_payment_form_add_btn" @click="addPayment">Add</button>
+          <button id="add_button" :class="$style.add_payment_form_add_btn" @click="addPayment">Add</button>
         </div>
       </div>
     </div>
@@ -38,7 +38,6 @@ export default {
       this.hideBtnTitle = this.show ? 'Hide' : 'Add New Cost'
     },
     addPayment () {
-      console.log('addPayment')
       const { value, category, date } = this
       const data = {
         value: Number(value),
@@ -52,6 +51,21 @@ export default {
     this.date = this.currentDate
     this.hideBtnTitle = 'Add New Cost'
     this.show = false
+    setTimeout(() => {
+      if (this.$route.name === 'addPayment') {
+        const event = new Event('click')
+        const hideButton = document.getElementById('hide_button')
+        hideButton.dispatchEvent(event)
+        if (this.$route.params.pathMatch) {
+          this.category = this.$route.params.pathMatch
+          if (this.$route.query.value) {
+            this.value = this.$route.query.value
+            this.addPayment()
+            hideButton.dispatchEvent(event)
+          }
+        }
+      }
+    }, 2000)
   },
   computed: {
     currentDate () {
